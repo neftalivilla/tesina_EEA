@@ -29,7 +29,7 @@ library("survival")
 library(survminer)
 library("survival")
 library(rms)
-
+library(riskRegression)
 
 #####Import Data####
 
@@ -47,27 +47,6 @@ base <- base %>%
   left_join(base.edu, by="PATID") %>%
   left_join(base.ids, by="PATID")
 
-# set.seed(123)
-# base.equipo.3<-base%>%
-#   dplyr::select(PATID,MALE,
-#                 AGE,
-#                 HEIGHT,
-#                 WEIGHT,
-#                 COYOACAN,
-#                 EDU_LEVEL,
-#                 INCOME,
-#                 EVER_SMOK,
-#                 CURR_SMOK,
-#                 EVER_PHYS,
-#                 DUR_PHYS,
-#                 BASE_DIABETES,
-#                 BASE_HYPERTENSION,
-#                 R_HBA1C,
-#                 PAS_PROM,
-#                 PAD_PROM,
-#                 D003)%>% distinct %>% sample_n(4000)
-# 
-# write.csv(base.equipo.3,"BASE_EQUIPO_3_MCPS.csv")
 
 #####Estimation of Formulas######
 
@@ -946,8 +925,6 @@ res.cut.other.7 <- survminer::surv_cutpoint(base.2, time = "PERSON_YEARS", event
 summary(res.cut.other.7)
 
 
-
-
 #####Tressholds Evaluation - Figure (Figure 6)#####
 
 ##Muerte All Vascular
@@ -1164,7 +1141,7 @@ Sup.Fig.1B<-base.2 %>%
   ggplot(aes(x = DAAT_index)) + 
   geom_histogram(aes(y=..density..),fill="#e79b33",col="white", binwidth = 10) +
   geom_density(col="#29498d")+
-  labs(title = "Deep-abdominal-adipose-tissue")+
+  labs(title = "Deep-Abdominal-Adipose-Tissue")+
   xlab ("DAAT") +
   ylab ("Densidad de área") +
   theme_classic()
@@ -1198,7 +1175,7 @@ Sup.Fig.1D<-base.2 %>%
   ggplot(aes(x = VAI_GEA_index)) + 
   geom_histogram(aes(y=..density..),fill="#e79b33",col="white", binwidth = 0.1) +
   geom_density(col="#29498d")+
-  labs(title = "Dysfunctional adiposity index ")+
+  labs(title = "Dysfunctional Adiposity Index ")+
   xlab ("DAI") +
   ylab ("Densidad de área") +
   theme_classic()
@@ -1216,8 +1193,8 @@ Sup.Fig.1E<-base.2 %>%
   ggplot(aes(x = LAAP_index)) + 
   geom_histogram(aes(y=..density..),fill="#e79b33",col="white", binwidth = 2.5) +
   geom_density(col="#29498d")+
-  labs(title = "Deep-abdominal-adipose-tissue ")+
-  xlab ("DAAT") +
+  labs(title = "Lipid Accumulation Product")+
+  xlab ("LAP") +
   ylab ("Densidad de área") +
   theme_classic()
 
@@ -1376,12 +1353,4 @@ ggplot(pred_lines, aes(x, y, colour=obs_Or_Pred, shape=obs_Or_Pred, linetype=obs
   scale_shape_manual(values=c(16,NA)) +
   theme_bw()
 
-base$HAS_FINAL<-factor(base$HAS_FINAL,labels = c("NO-HTA","HTA"))
-base$D015<-factor(base$D015,labels = c("NO-MUERTE-CVD","MUERTE-CVD"))
-table(base$HAS_FINAL,base$D015)
-base$MALE
-base$IMC
-m1<-glm(D015~HAS_FINAL,data = base,family = "binomial")
-summary(m1)
-jtools::summ(m1,exp=T)
 
